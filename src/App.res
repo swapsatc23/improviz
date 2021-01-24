@@ -30,7 +30,7 @@ let make = () => {
   let (winWidth, winHeight) = Hooks.useWindowSize()
 
   let width = winWidth - 60
-  let height = min(winHeight - 100, 400)
+  let height = winHeight - 100
 
   let target = {width: 90, height: 70}
 

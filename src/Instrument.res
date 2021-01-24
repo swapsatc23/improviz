@@ -60,7 +60,7 @@ let fromName = name =>
   | Bass => {
       directions: {
         x: Right,
-        y: Down,
+        y: Up,
       },
       layout: {
         firstNote: E,
@@ -93,7 +93,7 @@ let fromName = name =>
   | LeftHandedBass => {
       directions: {
         x: Left,
-        y: Down,
+        y: Up,
       },
       layout: {
         firstNote: E,
