@@ -1,5 +1,5 @@
 {
-  "name": "my-rescript-app",
+  "name": "improviz",
   "reason": {
     "react-jsx": 3
   },
@@ -20,7 +20,8 @@
   "suffix": ".bs.js",
   "namespace": true,
   "bs-dependencies": [
-    "reason-react"
+    "reason-react",
+    "bs-webapi"
   ],
   "bs-dev-dependencies": [
     "@glennsl/bs-jest",
