@@ -3,11 +3,11 @@ open Belt
 @bs.val external parseInt: (string, int) => int = "parseInt"
 type rgb = {r: int, g: int, b: int}
 
-let rgbaToString = ({r, g, b}, opacity: float) =>
+let rgbaToString = ({r, g, b}, opacity) =>
   `rgba(${Int.toString(r)},${Int.toString(g)},${Int.toString(b)}, ${Float.toString(opacity)})`
 
-let hexToRgb = (hex: string) =>
-  (hex |> Js.Re.exec_(%re("/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i")))
+let hexToRgb = hex =>
+  Js.Re.exec_(%re("/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i"), hex)
   ->Option.map(result => result->Js.Re.captures->Array.map(Js.Nullable.toOption))
   ->Option.flatMap(result =>
     switch result {

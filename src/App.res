@@ -10,9 +10,10 @@ type pattern = {
 type dimensions = {width: int, height: int}
 type grid = {cols: array<int>, rows: array<int>}
 
-let flatMap = (xs, f) => Array.reduce(xs, [], (acc, x) => Array.concat(acc, f(x)))
-
 let unsafeGetValue: ReactEvent.Form.t => string = %raw(`(event) => event.target.value`)
+
+let take = (xs, n) => Array.slice(xs, ~offset=0, ~len=n)
+let takeRight = (xs, n) => Array.slice(xs, ~offset=-n, ~len=n)
 
 @react.component
 let make = () => {
@@ -29,17 +30,30 @@ let make = () => {
 
   let (winWidth, winHeight) = Hooks.useWindowSize()
 
-  let width = winWidth - 60
-  let height = winHeight - 100
+  let maxWidth = winWidth - 60
+  let maxHeight = winHeight - 100
 
-  let target = {width: 90, height: 70}
+  let targetCellDimensions = {width: 90, height: 70}
+  let gridMaxCols = maxWidth / targetCellDimensions.width
+  let gridMaxRows = maxHeight / targetCellDimensions.height
 
-  let grid = Instrument.getGrid(instrument)
-
-  Js.Console.log(grid)
-  Js.Console.log(instrument)
+  let grid =
+    Instrument.getGrid(instrument)
+    ->switch instrument.directions.y {
+    | Down => take(_, gridMaxRows)
+    | Up => takeRight(_, gridMaxRows)
+    }
+    ->Array.map(
+      switch instrument.directions.x {
+      | Right => take(_, gridMaxCols)
+      | Left => takeRight(_, gridMaxCols)
+      },
+    )
 
   let firstRow = grid->Array.get(0)->Option.getWithDefault([])
+
+  let width = min(maxWidth, targetCellDimensions.width * firstRow->Array.length)
+  let height = min(maxHeight, targetCellDimensions.height * grid->Array.length)
 
   let cell = {
     width: width / firstRow->Array.length,
