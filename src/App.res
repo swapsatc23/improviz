@@ -2,11 +2,6 @@
 
 open Belt
 
-type pattern = {
-  color: string,
-  fundamental: Note.note,
-}
-
 type dimensions = {width: int, height: int}
 type grid = {cols: array<int>, rows: array<int>}
 
@@ -17,18 +12,13 @@ let takeRight = (xs, n) => Array.slice(xs, ~offset=-n, ~len=n)
 
 @react.component
 let make = () => {
-  let (pattern, setPattern) = React.useState(() => {
-    fundamental: G,
-    color: "#3988FF",
-  })
-
+  let (fundamental, setFundamental) = React.useState(() => Note.G)
   let (instrumentName, setInstrumentName) = React.useState(() => Instrument.LeftHandedGuitar)
   let (scaleName, setScaleName) = React.useState(() => Scale.Ionian)
+  let (winWidth, winHeight) = Hooks.useWindowSize()
 
   let instrument = Instrument.fromName(instrumentName)
   let scale = Scale.getScale(scaleName)
-
-  let (winWidth, winHeight) = Hooks.useWindowSize()
 
   let maxWidth = winWidth - 60
   let maxHeight = winHeight - 100
@@ -36,6 +26,10 @@ let make = () => {
   let targetCellDimensions = {width: 90, height: 70}
   let gridMaxCols = maxWidth / targetCellDimensions.width
   let gridMaxRows = maxHeight / targetCellDimensions.height
+
+  let context = React.useMemo1(() => Audio.newAudioContext(), [])
+
+  let play = Audio.play(context)
 
   let grid =
     Instrument.getGrid(instrument)
@@ -103,17 +97,20 @@ let make = () => {
         ->Array.mapWithIndex((rowIndex, cells) =>
           cells
           ->Array.mapWithIndex((cellIndex, {note, octave}) => {
-            let fundamentalIndex = Note.getIndexFromNote(pattern.fundamental)
+            let fundamentalIndex = Note.getIndexFromNote(fundamental)
 
             let halfTonesFromFundamental = Note.sanitizeNoteIndex(
               Note.getIndexFromNote(note) - fundamentalIndex,
             )
 
-            let opacity = scale[halfTonesFromFundamental]->Option.getWithDefault(0.0)
-            let rgb = Color.hexToRgb(pattern.color)
+            let noteValue = scale[halfTonesFromFundamental]->Option.getWithDefault(0.0)
+            let rgb = Color.hexToRgb(Color.Palette.backgroundColor)
+
+            let isDisplayed = noteValue !== 0.0
 
             <div
               key={Note.toString(note) ++ "-" ++ Int.toString(octave)}
+              onClick={_ => play(Note.getFrequency(note, octave))}
               className="noteContainer"
               style={ReactDOM.Style.make(
                 ~width=`${Int.toString(cell.width)}px`,
@@ -121,28 +118,20 @@ let make = () => {
                 ~transform=`translate(${Int.toString(cell.width * cellIndex)}px, ${Int.toString(
                     cell.height * rowIndex,
                   )}px)`,
-                ~backgroundColor=if opacity === 0.0 {
-                  "transparent"
-                } else {
-                  Color.rgbaToString(rgb, 0.03)
-                },
+                ~backgroundColor=isDisplayed ? Color.rgbaToString(rgb, 0.03) : "transparent",
                 (),
               )}>
               <div
                 className="noteDot"
+                onMouseEnter={_ =>
+                  if isDisplayed {
+                    play(Note.getFrequency(note, octave))
+                  }}
                 style={ReactDOM.Style.make(
-                  ~backgroundColor=if opacity === 0.0 {
-                    "transparent"
-                  } else {
-                    Color.rgbaToString(rgb, opacity)
-                  },
+                  ~backgroundColor=isDisplayed ? Color.Palette.getColor(noteValue, ()) : "",
                   (),
                 )}>
-                {if opacity === 0.0 {
-                  React.null
-                } else {
-                  note->Note.toString->React.string
-                }}
+                {isDisplayed ? note->Note.toString->React.string : React.null}
               </div>
             </div>
           })
@@ -160,7 +149,7 @@ let make = () => {
             }}>
           {Instrument.allInstruments
           ->Array.map(name =>
-            <option value={Instrument.toString(name)}>
+            <option key={Instrument.toString(name)} value={Instrument.toString(name)}>
               {name->Instrument.toString->React.string}
             </option>
           )
@@ -175,16 +164,18 @@ let make = () => {
             }}>
           {Scale.allScales
           ->Array.map(name =>
-            <option value={Scale.toString(name)}> {name->Scale.toString->React.string} </option>
+            <option key={Scale.toString(name)} value={Scale.toString(name)}>
+              {name->Scale.toString->React.string}
+            </option>
           )
           ->React.array}
         </select>
         <input
-          defaultValue={pattern.fundamental->Note.toString}
+          defaultValue={fundamental->Note.toString}
           className="input"
           onChange={e =>
             switch e->unsafeGetValue->Note.fromString {
-            | Some(note) => setPattern(pattern => {...pattern, fundamental: note})
+            | Some(note) => setFundamental(_ => note)
             | None => ()
             }}
         />

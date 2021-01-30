@@ -4,6 +4,7 @@ type halfTone = int
 
 type layout = {
   firstNote: Note.note,
+  firstOctave: int,
   x: array<halfTone>,
   y: array<halfTone>,
 }
@@ -53,6 +54,7 @@ let fromName = name =>
       },
       layout: {
         firstNote: E,
+        firstOctave: -2,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 5, 5, 5, 4, 5],
       },
@@ -64,6 +66,7 @@ let fromName = name =>
       },
       layout: {
         firstNote: E,
+        firstOctave: -3,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 5, 5, 5],
       },
@@ -75,6 +78,7 @@ let fromName = name =>
       },
       layout: {
         firstNote: E,
+        firstOctave: -1,
         x: Array.concat([0], Array.range(0, 12)->Array.map(_ => 2)),
         y: Array.concat([0], Array.range(0, 16)->Array.map(_ => 1)),
       },
@@ -86,6 +90,7 @@ let fromName = name =>
       },
       layout: {
         firstNote: E,
+        firstOctave: -2,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 5, 5, 5, 4, 5],
       },
@@ -97,6 +102,7 @@ let fromName = name =>
       },
       layout: {
         firstNote: E,
+        firstOctave: -3,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 5, 5, 5],
       },
@@ -137,7 +143,7 @@ let getGrid = ({directions, layout}) => {
       ->cellReduce((rowDistance, []), ((prevCellDistance, cells), cellDiff) => {
         let cellDistance = prevCellDistance + cellDiff
         let note = Note.getNoteFromIndex(cellDistance)
-        let octave = Note.getOctaveFromIndex(cellDistance)
+        let octave = layout.firstOctave + Note.getOctaveFromIndex(cellDistance)
         (cellDistance, cellConcat(cells, {note: note, octave: octave}))
       })
       ->snd

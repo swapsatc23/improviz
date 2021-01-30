@@ -4,6 +4,7 @@ body {
   --bg-color: #1a2131;
   --h-line-color: #384665;
   --v-line-color: #222b3f;
+  --not-bg-color: rgba(57, 136, 255, 0.3);
 
   padding: 0;
   margin: 0;
@@ -69,6 +70,10 @@ a {
   align-items: center;
   justify-content: center;
   transition: background-color 0.7s ease, color 0.1s ease;
+}
+
+.noteContainer:hover .noteDot {
+  background-color: var(--not-bg-color);
 }
 
 .input {
