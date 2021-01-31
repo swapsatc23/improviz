@@ -12,10 +12,11 @@ let createGain: audioContext => gain = %raw(`context => context.createGain()`)
 let gainConnect: (gain, audioContext) => unit = %raw(`(g, context) =>
     g.connect(context.destination)
 `)
-let start: oscillator => unit = %raw(`(o) => o.start(0)`)
-let stop: (gain, audioContext) => unit = %raw(`(g, context) =>
+let start: (gain, oscillator, audioContext) => unit = %raw(`(g, o, context) => {
+    g.gain.value = 0.2;
     g.gain.exponentialRampToValueAtTime(0.00001, context.currentTime + 2)
-`)
+    o.start(0);
+}`)
 
 let play = (c, frequency) => {
   let o = createOscillator(c)
@@ -23,6 +24,5 @@ let play = (c, frequency) => {
   o->oscillatorConnect(g)
   g->gainConnect(c)
   o->setFrequency(frequency)
-  o->start
-  g->stop(c)
+  g->start(o, c)
 }

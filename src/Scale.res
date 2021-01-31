@@ -10,7 +10,7 @@ type scale =
   | Pentatonic
   | Blues
   | MelodicMinor
-  | Everything
+  | Chromatic
 
 let allScales = [
   Ionian,
@@ -24,7 +24,7 @@ let allScales = [
   Pentatonic,
   Blues,
   MelodicMinor,
-  Everything,
+  Chromatic,
 ]
 
 let toString = scale =>
@@ -40,7 +40,7 @@ let toString = scale =>
   | Pentatonic => "Pentatonic"
   | Blues => "Blues"
   | MelodicMinor => "MelodicMinor"
-  | Everything => "Everything"
+  | Chromatic => "Chromatic"
   }
 
 let fromString = str =>
@@ -56,7 +56,7 @@ let fromString = str =>
   | "Pentatonic" => Some(Pentatonic)
   | "Blues" => Some(Blues)
   | "MelodicMinor" => Some(MelodicMinor)
-  | "Everything" => Some(Everything)
+  | "Chromatic" => Some(Chromatic)
   | _ => None
   }
 
@@ -73,5 +73,5 @@ let getScale = scale =>
   | Pentatonic => [1., 0., 0., 0.6, 0., 0.6, 0., 0.6, 0., 0., 0.6, 0.]
   | Blues => [1., 0., 0., 0.6, 0., 0.6, 0.15, 0.6, 0., 0., 0.6, 0.]
   | MelodicMinor => [1., 0., 0.15, 0.6, 0., 0.6, 0., 0.6, 0., 0.6, 0., 0.15]
-  | Everything => [1., 0.08, 0.17, 0.25, 0.33, 0.42, 0.5, 0.58, 0.67, 0.75, 0.83, 0.92]
+  | Chromatic => [1., 0.08, 0.17, 0.25, 0.33, 0.42, 0.5, 0.58, 0.67, 0.75, 0.83, 0.92]
   }
