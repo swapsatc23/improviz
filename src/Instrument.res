@@ -22,9 +22,9 @@ type instrument = {
   layout: layout,
 }
 
-type instruments = Guitar | Bass | Harpejji | LeftHandedGuitar | LeftHandedBass
+type instruments = Guitar | Bass | Harpejji | LeftHandedGuitar | LeftHandedBass | Cello
 
-let allInstruments = [Guitar, Bass, Harpejji, LeftHandedGuitar, LeftHandedBass]
+let allInstruments = [Guitar, Bass, Harpejji, LeftHandedGuitar, LeftHandedBass, Cello]
 
 let toString = name =>
   switch name {
@@ -33,6 +33,7 @@ let toString = name =>
   | Harpejji => "Harpejji"
   | LeftHandedGuitar => "LeftHandedGuitar"
   | LeftHandedBass => "LeftHandedBass"
+  | Cello => "Cello"
   }
 
 let fromString = name =>
@@ -42,6 +43,7 @@ let fromString = name =>
   | "Guitar" => Some(Guitar)
   | "LeftHandedGuitar" => Some(LeftHandedGuitar)
   | "LeftHandedBass" => Some(LeftHandedBass)
+  | "Cello" => Some(Cello)
   | _ => None
   }
 
@@ -105,6 +107,18 @@ let fromName = name =>
         firstOctave: -3,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 5, 5, 5],
+      },
+    }
+  | Cello => {
+      directions: {
+        x: Right,
+        y: Up,
+      },
+      layout: {
+        firstNote: C,
+        firstOctave: 0,
+        x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
+        y: [0, 7, 7, 7],
       },
     }
   }
