@@ -22,9 +22,9 @@ type instrument = {
   layout: layout,
 }
 
-type instruments = Guitar | Bass | Harpejji | LeftHandedGuitar | LeftHandedBass | Cello
+type instruments = Guitar | Bass | Harpejji | LeftHandedGuitar | LeftHandedBass | Cello | Uku
 
-let allInstruments = [Guitar, Bass, Harpejji, LeftHandedGuitar, LeftHandedBass, Cello]
+let allInstruments = [Guitar, Bass, Harpejji, LeftHandedGuitar, LeftHandedBass, Cello, Uku]
 
 let toString = name =>
   switch name {
@@ -34,6 +34,7 @@ let toString = name =>
   | LeftHandedGuitar => "LeftHandedGuitar"
   | LeftHandedBass => "LeftHandedBass"
   | Cello => "Cello"
+  | Uku => "Uku"
   }
 
 let fromString = name =>
@@ -44,6 +45,7 @@ let fromString = name =>
   | "LeftHandedGuitar" => Some(LeftHandedGuitar)
   | "LeftHandedBass" => Some(LeftHandedBass)
   | "Cello" => Some(Cello)
+  | "Uku" => Some(Uku)
   | _ => None
   }
 
@@ -56,7 +58,7 @@ let fromName = name =>
       },
       layout: {
         firstNote: E,
-        firstOctave: -2,
+        firstOctave: 0,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 5, 5, 5, 4, 5],
       },
@@ -92,7 +94,7 @@ let fromName = name =>
       },
       layout: {
         firstNote: E,
-        firstOctave: -2,
+        firstOctave: 0,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 5, 5, 5, 4, 5],
       },
@@ -115,10 +117,22 @@ let fromName = name =>
         y: Up,
       },
       layout: {
-        firstNote: C,
+        firstNote: G,
         firstOctave: 0,
         x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
         y: [0, 7, 7, 7],
+      },
+    }
+  | Uku => {
+      directions: {
+        x: Right,
+        y: Up,
+      },
+      layout: {
+        firstNote: G,
+        firstOctave: 0,
+        x: Array.concat([0], Array.range(0, 20)->Array.map(_ => 1)),
+        y: [5, -7, 4, 5],
       },
     }
   }
